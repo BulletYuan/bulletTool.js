@@ -1,15 +1,44 @@
-
-let timestamp=()={
+/**
+	Author:BulletYuan
+	UpdateTime:2017.8.22
+	Version:1.2.1
+	
+	用法：
+	在页面上使用bullet或window.bullet即可调用相关的方法。示例如下：
+	
+	bullet.timestamp()
+	bullet.timestamp_10()
+	bullet.timeFormat({ts:timestamp,format:'yyyy mm dd HH:MM:SS'})
+	bullet.getParams({url:'https://github.com/BulletYuan/?a=a1'})
+	bullet.toUrl({a:a1})
+	bullet.cookie.getCookies()
+	bullet.cookie.getCookie('key')
+	bullet.cookie.setCookie('key','value',exdays)
+	bullet.cookie.deleteCookie('key')
+	bullet.ajax({
+	  type:'GET',
+	  url:'https://github.com/BulletYuan/',
+	  dataType:'JSON',
+	  async:true,
+	  data:{a:'a1'},
+	  header:{Content-Type:'application/json;charset=UTF-8'},
+	  success:(res,status,readyState)=>{ console.log(res,status,readyState) },
+	  error:(status,readyState)=>{ console.log(status,readyState) }
+	})
+	
+**/
+'use strict';
+let timestamp=()=>{
 	return new Date().getTime();
 };
 
-let timestamp_10=()={
-	return Number(timestamp())/1000;
+let timestamp_10=()=>{
+	return Math.floor(Number(timestamp())/1000);
 };
 
-let format=(opts)=>{
-	let ts=opts.timestamp||timestamp();
-	let format=opts.format||"yyyy-mm-dd HH:MM:SS";
+let timeFormat=function(){
+	let ts=arguments[0]?arguments[0].timestamp:timestamp();
+	let format=arguments[0]?arguments[0].format:"yyyy-mm-dd HH:MM:SS";
 	let now=new Date(Number(ts));
 	let year=now.getFullYear();
 	let month=(format.indexOf('mm')>=0&&(now.getMonth()+1)<10?"0"+(now.getMonth()+1):(now.getMonth()+1));
@@ -26,19 +55,21 @@ let format=(opts)=>{
 	return format;
 };
 
-let url={
+let urlParams={
 	params:{},
-	getParams:(opts)=>{
-		let a=opts.url||window.location.search.split('?')[1].toString().replace(/=/g,':').replace(/&/g,',').toString()
-		let b="";
-		for(let c of a.split(',')){
-		  b+="\""+c.split(':')[0]+"\":\""+c.split(':')[1]+"\","
-		}
-		let o=JSON.parse('{'+b.substr(0,b.length-1)+'}')
-		return o;
+	getParams:function(){
+		if((arguments[0]?arguments[0].url:window.location.search).indexOf('?')>=0){
+			let a=(arguments[0]?arguments[0].url:window.location.search).split('?')[1].toString().replace(/=/g,':').replace(/&/g,',').toString();
+			let b="";
+			for(let c of a.split(',')){
+			  b+="\""+c.split(':')[0]+"\":\""+c.split(':')[1]+"\",";
+			}
+			this.params=JSON.parse('{'+b.substr(0,b.length-1)+'}');
+			return this.params;
+		}else return {};
 	},
-	toUrl:(opts)=>{
-		let a=opts||JSON.stringify(params).replace(/{/g,'').replace(/}/g,'').replace(/:/g,'=').replace(/,/g,'&');
+	toUrl:function(){
+		let a=(arguments[0]||JSON.stringify(this.params)).replace(/{/g,'').replace(/}/g,'').replace(/:/g,'=').replace(/,/g,'&').replace(/\"|\'/g,'');
 		return a;
 	}
 }
@@ -57,12 +88,12 @@ let cookie={
 		return b;
 	},
 	getCookies:function(){
-		let cstr=document.cookie.replace(/=/g,':').replace(/;/g,',').toString();
+		let cstr=document.cookie.replace(/=/g,'@@@@').replace(/;/g,'~~~~').toString();
 		let b="";
-		for(let c of cstr.split(',')){
-		  b+="\""+c.split(':')[0].trim()+"\":\""+c.split(':')[1].trim()+"\",";
+		for(let c of cstr.split('~~~~')){
+			if(c) b+="\""+c.split('@@@@')[0].trim()+"\":\""+c.split('@@@@')[1].trim()+"\",";
 		}
-		cookie.cookies=JSON.parse('{'+b.substr(0,b.length-1)+'}')
+		cookie.cookies=JSON.parse('{'+b.substr(0,b.length-1).replace(/@@@@/g,':').replace(/~~~~/g,',')+'}')
 		return cookie.cookies;
 	},
 	getCookie:function(name){
@@ -85,13 +116,13 @@ let cookie={
 let ajax=function(opts){
 	opts=opts||{};
 	if(opts.url){
-		const xmlhttp;
+		let xmlhttp;
 		if(window.XMLHttpRequest) xmlhttp=new XMLHttpRequest();
 		else xmlhttp=new ActiveXObject('Microsoft.XMLHTTP');
 		
-		let type=opts.type.toUpperString()||'GET';
+		let type=opts.type.toString().toUpperCase()||'GET';
 		let url=opts.url||'';
-		let dataType=opts.dataType.toUpperString()||'JSON';
+		let dataType=opts.dataType?opts.dataType.toString().toUpperCase():'JSON';
 		let async=opts.async||true;
 		let data=opts.data||{};
 		let header=opts.header||{};
@@ -108,7 +139,7 @@ let ajax=function(opts){
 			}
 		}
 		xmlhttp.open(type,(type==='GET'?url+"?"+ajax_obj2url(data)+"&_RandomMark="+Math.random():url),async);
-		if(header){
+		if(JSON.stringify(header).indexOf(':')>=0){
 			let h=JSON.stringify(header).substr(1,JSON.stringify(header).length-2)
 			for(let a of h.split(',')){
 				xmlhttp.setRequestHeader(a.split(':')[0].replace(/\"|\'/g,''),a.split(':')[1].replace(/\"|\'/g,''))
@@ -130,6 +161,17 @@ let ajax_obj2url=function(obj){
 }
 
 
-(function(){
-	
+let bullet=(function(){
+	return {
+		timestamp,
+		timestamp_10,
+		timeFormat,
+		
+		urlParams,
+		
+		cookie,
+		
+		ajax
+	};
 })();
+window.bullet=bullet;
