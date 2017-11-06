@@ -1,16 +1,16 @@
 该工具是我之前用到的一些功能，然后将他们封装打包成一个js库，方便以后的调用。
-主要的方法有：
-####时间类####
+主要的方法有：(mainly functions)
+####时间类-timeClass####
 timestamp()                                                                       //获取十三位时间戳，精确到毫秒
 timestamp_10()                                                                    //获取十位时间戳，精确到秒
 timeFormat({ts:timestamp,format:'yyyy mm dd HH:MM:SS'})                           //将时间戳转化为格式化字符串
                                                                                   //y:年;m:月;d:日;H:时;M:分;S:秒;
-####网址类####
+####网址类-urlClass####
 url.getParams({url:'https://github.com/BulletYuan/?a=a1'})                        //将URL参数（若没有则获取当前页面的网址）后的
                                                                                   //search部分，转换为对象
 url.toUrl({a:a1})                                                                 //将对象参数（若没有则获取上一次网址转化为对象的结果）
                                                                                   //转换为URL参数，不含'?'
-####Cookie类####
+####Cookie类-cookieClass####
 cookie.getCookies()                                                               //获取当前页面的所有cookie，以对象形式返回
 cookie.getCookie('key')                                                           //获取当前页面的键名为'key'的cookie，返回值内容
 cookie.setCookie('key','value',exdays)                                            //为当前页面添加键值分别为'key','value'的cookie条目，
@@ -18,7 +18,7 @@ cookie.setCookie('key','value',exdays)                                          
                                                                                   //cookie对象形式
 cookie.deleteCookie('key')                                                        //删除当前页面的键名为'key'的cookie，返回新的页面
                                                                                   //cookie对象形式
-####网络请求类####
+####网络请求类-ajaxClass####
 ajax({
   type:'GET',                                                                     //请求类型：GET,POST,PUT,DELETE
   url:'https://github.com/BulletYuan/',                                           //请求地址
