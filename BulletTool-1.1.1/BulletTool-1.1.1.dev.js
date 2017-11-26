@@ -1,6 +1,6 @@
 /**
 	Author:BulletYuan
-	UpdateTime:2017.11.6
+	UpdateTime:2017.11.26
 	Version:1.1.1
 	
 	用法：
@@ -24,6 +24,11 @@
 	  header:{Content-Type:'application/json;charset=UTF-8'},
 	  success:(res,status,readyState)=>{ console.log(res,status,readyState) },
 	  error:(status,readyState)=>{ console.log(status,readyState) }
+	})
+	bullet.scrollPage({
+		el:document.getElementsByTagName('body').item(0),
+		scorllUp:function(){},
+		scorllDown:function(){}
 	})
 	
 **/
@@ -161,23 +166,25 @@ let ajax_obj2url=function(obj){
 }
 
 let scrollPage=function(){
-	if(arguments[0] && typeof arguments[0] === 'object' && typeof arguments[0].el === 'object'){
-		let dom = arguments[0].el;
-		let scorllUpFunc,scrollDownFunc;
-		if(arguments[0].scorllUp && typeof arguments[0].scorllUp === 'function')
-			scorllUpFunc=arguments[0].scorllUp;
-		if(arguments[0].scrollDown && typeof arguments[0].scrollDown === 'function')
-			scrollDownFunc=arguments[0].scrollDown;
-		dom.onscroll=function(){
-			if(dom.scrollHeight-dom.clientHeight===dom.scrollTop){
-				arguments[0].scorllUp;
-			}
-			if(dom.scrollTop===0){
-				arguments[0].scrollDown;
-			}
+	let dom,scorllUpFunc,scrollDownFunc;
+	dom=document.getElementsByTagName('body').item(0);
+	scorllUpFunc=function(){ console.log('bottom of scroll-up for load') }
+	scrollDownFunc=function(){ console.log('top of scorll-down for refresh') }
+	
+	if(arguments[0] && typeof arguments[0] === 'object' && typeof arguments[0].el === 'object')
+		dom = arguments[0].el;
+	if(arguments[0] && arguments[0].scorllUp && typeof arguments[0].scorllUp === 'function')
+		scorllUpFunc=arguments[0].scorllUp;
+	if(arguments[0] && arguments[0].scrollDown && typeof arguments[0].scrollDown === 'function')
+		scrollDownFunc=arguments[0].scrollDown;
+		
+	dom.onscroll=function(){
+		if(dom.scrollHeight-dom.clientHeight===dom.scrollTop){
+			scorllUpFunc();
 		}
-	}else{
-		console.log('no dom object!')
+		if(dom.scrollTop===0){
+			scrollDownFunc();
+		}
 	}
 }
 
@@ -192,7 +199,9 @@ let bullet=(function(){
 		
 		cookie,
 		
-		ajax
+		ajax,
+		
+		scrollPage
 	};
 })();
 window.bullet=bullet;
