@@ -49,8 +49,8 @@ ajax({
 })
 ####页面滑拉类-pageScrollClass####
 scrollPage({
-		el:document.getElementsByTagName('body').item(0),						  //需要监听下滑或上拉事件的元素
-																				  //不传该值，则默认为监听"body"
-		scorllUp:function(){},													  //页面上拉加载更多事件
-		scorllDown:function(){}													  //页面下滑刷新数据事件
+		el:document.getElementsByTagName('body').item(0),		  //需要监听下滑或上拉事件的元素
+										  //不传该值，则默认为监听"body"
+		scorllUp:function(){},						  //页面上拉加载更多事件
+		scorllDown:function(){}						  //页面下滑刷新数据事件
 	})
