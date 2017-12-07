@@ -27,8 +27,9 @@
 	})
 	bullet.scrollPage({
 		el:document.getElementsByTagName('body').item(0),
-		scorllUp:function(){},
-		scorllDown:function(){}
+		scorllUp:function(e){},
+		scorllDown:function(e){},
+		scorlling:function(e){}
 	})
 	
 **/
@@ -169,7 +170,8 @@ let scrollPage=function(){
 	let dom,scorllUpFunc,scrollDownFunc;
 	dom=document.getElementsByTagName('body').item(0);
 	scorllUpFunc=function(){ console.log('bottom of scroll-up for load') }
-	scrollDownFunc=function(){ console.log('top of scorll-down for refresh') }
+	scrollDownFunc=function(){ console.log('top of scorll-down for refresh') 
+	scrollingFunc=function(){ console.log('scrolling the page') }
 	
 	if(arguments[0] && typeof arguments[0] === 'object' && typeof arguments[0].el === 'object')
 		dom = arguments[0].el;
@@ -177,13 +179,19 @@ let scrollPage=function(){
 		scorllUpFunc=arguments[0].scorllUp;
 	if(arguments[0] && arguments[0].scrollDown && typeof arguments[0].scrollDown === 'function')
 		scrollDownFunc=arguments[0].scrollDown;
+	if(arguments[0] && arguments[0].scrolling && typeof arguments[0].scrolling === 'function')
+		scrollingFunc=arguments[0].scrolling;
 		
-	dom.onscroll=function(){
+	dom.onscroll=function(event){
+		let e=event||window.event;
 		if(dom.scrollHeight-dom.clientHeight===dom.scrollTop){
-			scorllUpFunc();
+			scorllUpFunc(e);
 		}
-		if(dom.scrollTop===0){
-			scrollDownFunc();
+		else if(dom.scrollTop===0){
+			scrollDownFunc(e);
+		}
+		else{
+			scrollingFunc(e);
 		}
 	}
 }
