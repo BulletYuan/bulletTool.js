@@ -170,7 +170,7 @@ let scrollPage=function(){
 	let dom,scorllUpFunc,scrollDownFunc;
 	dom=document.getElementsByTagName('body').item(0);
 	scorllUpFunc=function(){ console.log('bottom of scroll-up for load') }
-	scrollDownFunc=function(){ console.log('top of scorll-down for refresh') 
+	scrollDownFunc=function(){ console.log('top of scorll-down for refresh') }
 	scrollingFunc=function(){ console.log('scrolling the page') }
 	
 	if(arguments[0] && typeof arguments[0] === 'object' && typeof arguments[0].el === 'object')
