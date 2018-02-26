@@ -97,7 +97,7 @@ let cookie={
 		let cstr=document.cookie.replace(/=/g,'@@@@').replace(/;/g,'~~~~').toString();
 		let b="";
 		for(let c of cstr.split('~~~~')){
-			if(c) b+="\""+c.split('@@@@')[0].trim()+"\":\""+c.split('@@@@')[1].trim()+"\",";
+			if(c&&c.indexOf('@@@@')>=0) b+="\""+c.split('@@@@')[0].trim()+"\":\""+c.split('@@@@')[1].trim()+"\",";
 		}
 		cookie.cookies=JSON.parse('{'+b.substr(0,b.length-1).replace(/@@@@/g,':').replace(/~~~~/g,',')+'}')
 		return cookie.cookies;
