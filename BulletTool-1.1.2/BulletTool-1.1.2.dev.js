@@ -45,6 +45,7 @@ let timestamp_10=()=>{
 let timeFormat=function(){
 	let ts=arguments[0]?arguments[0].timestamp:timestamp();
 	let format=arguments[0]?arguments[0].format:"yyyy-mm-dd HH:MM:SS";
+	if(Number(ts)<=9999999999)	ts=Number(ts)*1000;
 	let now=new Date(Number(ts));
 	let year=now.getFullYear();
 	let month=(format.indexOf('mm')>=0&&(now.getMonth()+1)<10?"0"+(now.getMonth()+1):(now.getMonth()+1));
