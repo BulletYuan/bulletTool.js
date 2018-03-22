@@ -49,9 +49,23 @@ ajax({
 })
 ####页面滑拉类-pageScrollClass####
 scrollPage({
-		el:document.getElementsByTagName('body').item(0),		  //需要监听下滑或上拉事件的元素
-										  //不传该值，则默认为监听"body"
-		scorllUp:function(e){},						  //页面上拉加载更多事件
-		scorllDown:function(e){},					  //页面下滑刷新数据事件
-		scorlling:function(e){}						  //页面下滑过程事件
-	})
+	el:document.getElementsByTagName('body').item(0),		  //需要监听下滑或上拉事件的元素
+									  //不传该值，则默认为监听"body"
+	scorllUp:function(e){},						  //页面上拉加载更多事件
+	scorllDown:function(e){},					  //页面下滑刷新数据事件
+	scorlling:function(e){}						  //页面下滑过程事件
+})
+####图片处理类-imageDealClass####
+bullet.zipImage({											//图片压缩
+	imgSrc:"",												//图片地址或base64码（必填参数）
+	width:200,												//图片压缩宽度，优先高度，按照宽高比缩放高度
+	height:200,												//图片压缩高度，按照高宽比缩放宽度
+	quality:0.7,											//图片压缩质量，0-1数字，默认为0.7
+	fileType:"jpeg",										//图片文件类型，默认为jpeg
+	done:(base64)=>{										//压缩成功回调方法，传入压缩图片base64码
+		console.log(base64);
+	}
+})
+
+bullet.toFileBlob(base64,0)									//base64码转换成file对象或blob对象，方便上传
+															//0 转换为blob对象		1 转换为file对象
