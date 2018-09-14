@@ -69,3 +69,8 @@ bullet.zipImage({											//图片压缩
 
 bullet.toFileBlob(base64,0)									//base64码转换成file对象或blob对象，方便上传
 															//0 转换为blob对象		1 转换为file对象
+
+new bullet.Gray2ColorImage({          //灰度图转彩色
+  imageSrc:"",                        //图像资源url
+  colorMap:"",                        //灰度图对应彩色的色标图
+})
