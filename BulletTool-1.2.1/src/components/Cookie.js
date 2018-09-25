@@ -11,7 +11,7 @@ BulletTool_Cookie = (function(){
         this.Cookie={};
     }
     A.prototype.toCookieString = function(){
-        if(!document.cookie) throw new Error("浏览器不支持Cookie功能！");
+        if(document.cookie === undefined) throw new Error("浏览器不支持Cookie功能！");
 		let c=this.Cookie||this.getCookies();
 		c=JSON.stringify(c).replace(/:/g,'=').replace(/,/g,';')
 		c=c.substring(1,c.length-1).toString();
@@ -23,7 +23,7 @@ BulletTool_Cookie = (function(){
 		return b;
 	};
 	A.prototype.getCookies = function(){
-        if(!document.cookie) throw new Error("浏览器不支持Cookie功能！");
+        if(document.cookie === undefined) throw new Error("浏览器不支持Cookie功能！");
 		let cstr=document.cookie.replace(/=/g,'@@@@').replace(/;/g,'~~~~').toString();
 		let b="";
 		for(let c of cstr.split('~~~~')){
@@ -33,12 +33,12 @@ BulletTool_Cookie = (function(){
 		return this.Cookie;
 	};
 	A.prototype.getCookie = function(name){
-        if(!document.cookie) throw new Error("浏览器不支持Cookie功能！");
+        if(document.cookie === undefined) throw new Error("浏览器不支持Cookie功能！");
 		let c=this.Cookie||this.getCookies();
 		return c[name]||"";
 	};
 	A.prototype.setCookie = function(k,v,exdays){
-        if(!document.cookie) throw new Error("浏览器不支持Cookie功能！");
+        if(document.cookie === undefined) throw new Error("浏览器不支持Cookie功能！");
 		let d = new Date();  
 		d.setTime(d.getTime() + ((exdays||1)*24*60*60*1000));  
 		let expires = "expires="+d.toUTCString();
@@ -47,7 +47,7 @@ BulletTool_Cookie = (function(){
 		return c;
 	};
 	A.prototype.deleteCookie = function(name){
-        if(!document.cookie) throw new Error("浏览器不支持Cookie功能！");
+        if(document.cookie === undefined) throw new Error("浏览器不支持Cookie功能！");
 		return this.setCookie(name,'',-1);
     }
     
