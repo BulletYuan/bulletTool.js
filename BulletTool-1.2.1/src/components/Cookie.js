@@ -40,15 +40,14 @@ BulletTool_Cookie = (function(){
 	A.prototype.setCookie = function(k,v,exdays){
         if(document.cookie === undefined) throw new Error("浏览器不支持Cookie功能！");
 		let d = new Date();  
-		d.setTime(d.getTime() + ((exdays||1)*24*60*60*1000));  
+		d.setTime(d.getTime() + ((exdays||1)*24*60*60*1000));
 		let expires = "expires="+d.toUTCString();
 		document.cookie=k+'='+escape(v)+';'+expires;
-		let c=this.getCookies();
-		return c;
+		return this.getCookies();
 	};
 	A.prototype.deleteCookie = function(name){
         if(document.cookie === undefined) throw new Error("浏览器不支持Cookie功能！");
-		return this.setCookie(name,'',-1);
+		return name?this.setCookie(name,'',-1):false;
     }
     
     return A;
