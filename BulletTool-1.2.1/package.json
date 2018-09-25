@@ -4,7 +4,8 @@
   "description": "a front tool of bullet-tool",
   "main": "index.js",
   "scripts": {
-    "test": "bullet tool test"
+    "test": "bullet tool test",
+    "build": "webpack"
   },
   "author": "bulletYuan",
   "license": "ISC",

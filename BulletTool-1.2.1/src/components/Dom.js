@@ -59,7 +59,7 @@ BulletTool_Dom = (function(){
         obj=obj||{};
         return await Json2Dom(document,obj).outerHTML;
     }
-    A.prototype.createDom = function(obj,el,_callback){
+    A.prototype.createDom = async function(obj,el,_callback){
         obj=obj||{};
         let chd=await Json2Dom(el,obj);
         el.appendChild(chd);
