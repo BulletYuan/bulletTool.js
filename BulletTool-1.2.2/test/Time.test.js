@@ -1,6 +1,6 @@
 const chai = require('./libs/chai');
 const should = chai.should();
-const Time = require('./components/Time')
+const Time = require('./components/Time');
 
 describe("component test : Time module\nset default time is 2008-4-30", () => {
     const time = new Time('2008-4-30')

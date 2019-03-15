@@ -11,6 +11,15 @@ const
 			this.Params = {};
 		}
 		A.prototype.getParams = function (path) {
+			path = path || window.location.href;
+			const match={
+				protocol:/^(.*?):/g,
+				host:/\/\/(.*?)\//g,
+				// hostName:
+			};
+			if(path){
+
+			}else return {};
 			if ((path ? path : window.location.search).indexOf('?') >= 0) {
 				let a = (path ? path : window.location.search).split('?')[1].toString().replace(/=/g, ':').replace(/&/g, ',').toString();
 				let b = "";
