@@ -1,0 +1,24 @@
+{
+  "name": "bullettool",
+  "version": "2.0.1",
+  "description": "a front tool of bullet-tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/BulletYuan/bulletTool.js.git"
+  },
+  "keywords": [
+    "bullet",
+    "bullet-tool",
+    "frontend"
+  ],
+  "author": "bulletYuan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BulletYuan/bulletTool.js/issues"
+  },
+  "homepage": "https://github.com/BulletYuan/bulletTool.js#readme"
+}

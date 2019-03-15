@@ -1,0 +1,24 @@
+{
+  "name": "bullettool",
+  "version": "1.2.2",
+  "description": "a front tool of bullet-tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/BulletYuan/bulletTool.js.git"
+  },
+  "keywords": [
+    "bullet",
+    "bullet-tool",
+    "frontend"
+  ],
+  "author": "bulletYuan",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2"
+  }
+}
