@@ -32,7 +32,7 @@
     const time = new bullet.Time('2018-4-30');
     time.timestamp(); //获取十三位时间戳，精确到毫秒
     time.timestamp_10();  //获取十位时间戳，精确到秒
-    time.timeFormat(timestamp?,'yyyy mm dd HH:MM:SS'); //将时间戳转化为格式化字符串，y:年;m:月;d:日;H:时;M:分;S:秒;
+    time.timeFormat(timestamp,'yyyy mm dd HH:MM:SS'); //将时间戳转化为格式化字符串，y:年;m:月;d:日;H:时;M:分;S:秒;
 
     const url = new bullet.Url();
     url.getParams("https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=25017023_10_pg");  //将URL地址转换为对象
