@@ -1,7 +1,7 @@
 /**
 	Author:BulletYuan
 	UpdateTime:2019.03.15
-	Version:2.0.1
+	Version:1.2.2
 	
 	用法：
 	在页面上使用bullet或window.bullet即可调用相关的方法。示例如下：

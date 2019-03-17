@@ -3,7 +3,7 @@
  * Desc:            基于xmlhttprequest技术的http请求，默认是get方式
  * Author:          BulletYuan
  * Create-Time:     2018.09.22
- * Last-Time:       
+ * Last-Time:       2019.03.15
  */
 const
 	BulletTool_HttpRequest = (function () {
@@ -51,23 +51,11 @@ const
 				let type = opts.type.toString().toUpperCase() || 'GET';
 				let url = opts.url;
 				let dataType = opts.dataType ? opts.dataType.toString().toUpperCase() : 'JSON';
-				let async = opts.async || true;
 				let data = opts.data || {};
 				let header = opts.header || {};
-				let success = opts.success || function () { };
-				let error = opts.error || function () { };
 
-				if (async) {
-					xmlhttp.onreadystatechange = function () {
-						if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-							success(typeTrans(dataType, xmlhttp), xmlhttp.status, xmlhttp.readyState);
-						} else {
-							error(xmlhttp.status, xmlhttp.readyState);
-						}
-					}
-				}
 				return new Promise((resolve, reject) => {
-					xmlhttp.open(type, (type === 'GET' ? url + "?" + obj2url(data) + "&_r=" + Math.random() : url), async);
+					xmlhttp.open(type, (type === 'GET' ? url + "?" + obj2url(data) + "&_r=" + Math.random() : url), true);
 					if (JSON.stringify(header).indexOf(':') >= 0) {
 						let h = JSON.stringify(header).substr(1, JSON.stringify(header).length - 2)
 						for (let a of h.split(',')) {

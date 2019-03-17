@@ -3,7 +3,7 @@
  * Desc:            url路径操作类，对url的get参数进行json序列化与字符串转换
  * Author:          BulletYuan
  * Create-Time:     2018.09.22
- * Last-Time:       
+ * Last-Time:       2019.03.17
  */
 const
 	BulletTool_Url = (function () {
@@ -12,26 +12,43 @@ const
 		}
 		A.prototype.getParams = function (path) {
 			path = path || window.location.href;
-			const match={
-				protocol:/^(.*?):/g,
-				host:/\/\/(.*?)\//g,
-				// hostName:
-			};
-			if(path){
-
-			}else return {};
-			if ((path ? path : window.location.search).indexOf('?') >= 0) {
-				let a = (path ? path : window.location.search).split('?')[1].toString().replace(/=/g, ':').replace(/&/g, ',').toString();
-				let b = "";
-				for (let c of a.split(',')) {
-					b += "\"" + c.split(':')[0] + "\":\"" + c.split(':')[1] + "\",";
+			const match = /(\w+):\/\/([^/:]+)(:\d*)?(.*)+/g;
+			if (path) {
+				const arr = match.exec(path);
+				this.Params = {
+					protocol: arr[0] || "",
+					host: arr[1] || "",
+					port: arr[2] ? arr[2].split(":")[1] : "",
+					path: "",
+					search: "",
+					hash: "",
+					searchParams: {},
+				};
+				const param = arr[3];
+				const search = /(\/.*)+?(\?.*)+?/g.exec(param);
+				const hash = /(\/.*)+?(\?.*)+?/g.exec(param);
+				if (search) {
+					this.Params['path'] = search[0] || "";
+					this.Params['search'] = search[1] || "";
+					if (this.Params['search'].split('?')) {
+						this.Params['search'].split('?')[1].split('&').forEach(el => {
+							this.Params['searchParams'][el.split('=')[0]] = el.split('=')[1];
+						});
+					}
+				} else {
+					this.Params['path'] = hash[0] || "";
+					this.Params['hash'] = hash[1] || "";
 				}
-				this.Params = JSON.parse('{' + b.substr(0, b.length - 1) + '}');
-				return this.Params;
 			} else return {};
 		};
 		A.prototype.toUrl = function (obj) {
-			let a = (obj || JSON.stringify(this.Params)).replace(/{/g, '').replace(/}/g, '').replace(/:/g, '=').replace(/,/g, '&').replace(/\"|\'/g, '');
+			let a = "";
+			Object.keys(obj).forEach((el, i) => {
+				a += `${el}=${obj[el]}`;
+				if (i < Object.keys(obj).length) {
+					a += "&";
+				}
+			});
 			return a;
 		}
 
