@@ -12,6 +12,7 @@
     并使用mocha和chai组件编写组件的测试方案。
 
  > 使用：
+
     ```javascript
     const time = new bullet.Time('2018-4-30');
     time.timestamp(); //获取十三位时间戳，精确到毫秒
