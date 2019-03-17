@@ -17,7 +17,7 @@
 
  > 参考：
     
-*   [正则表达式学习](http://www.runoob.com/regexp/regexp-syntax.html,"正则表达式 - 语法 - 菜鸟教程")
+*   [正则表达式学习](http://www.runoob.com/regexp/regexp-syntax.html "正则表达式 - 语法 - 菜鸟教程")
 
 
 ## release-1.2.1 - 2018.9.23 - bulletTool-1.2.1
