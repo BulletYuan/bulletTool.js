@@ -65,9 +65,9 @@ const
 					type === 'POST' ? xmlhttp.send(obj2url(data)) : xmlhttp.send();
 					xmlhttp.onreadystatechange = function () {
 						if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-							resolve(typeTrans(dataType, xmlhttp), xmlhttp.status, xmlhttp.readyState);
+							resolve({ data: typeTrans(dataType, xmlhttp), status: xmlhttp.status, readyState: xmlhttp.readyState });
 						} else {
-							reject(xmlhttp.status, xmlhttp.readyState);
+							reject({ status: xmlhttp.status, readyState: xmlhttp.readyState });
 						}
 					}
 				});
