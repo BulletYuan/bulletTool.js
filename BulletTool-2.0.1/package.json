@@ -1,6 +1,6 @@
 {
   "name": "bullettool",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "a front tool of bullet-tool",
   "main": "index.ts",
   "scripts": {

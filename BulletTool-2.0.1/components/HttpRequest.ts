@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import '../typings/HttpRequest';
 
 export class HttpRequest {
@@ -5,10 +6,14 @@ export class HttpRequest {
     private xmlhttp: XMLHttpRequest;
     private opts: HttpRequestOption;
 
-    constructor(opts: HttpRequestOption) {
-        this.xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-        if (window['XMLHttpRequest']) this.xmlhttp = new XMLHttpRequest();
-        this.opts = opts;
+    constructor() {
+        if (window['ActiveXObject']) {
+            this.xmlhttp = new window['ActiveXObject']('Microsoft.XMLHTTP');
+        } else if (window['XMLHttpRequest']) {
+            this.xmlhttp = new XMLHttpRequest();
+        } else {
+            throw (new Error('not http request object can use at current browser.'));
+        }
     }
 
     /**
@@ -17,36 +22,42 @@ export class HttpRequest {
      * @returns
      * @memberof HttpRequest
      */
-    request() {
-        let type = this.opts.type.toString().toUpperCase() || 'GET';
-        let url = this.opts.url;
-        let dataType = this.opts.dataType ? this.opts.dataType.toString().toUpperCase() : 'JSON';
-        let data = this.opts.data || {};
-        let header = this.opts.header || {};
+    request(opts: HttpRequestOption): Observable<any> {
+        this.opts = opts;
+        const type = this.opts.type.toString().toUpperCase() || 'GET';
+        const url = this.opts.url;
+        const dataType = this.opts.dataType ? this.opts.dataType.toString().toUpperCase() : 'JSON';
+        const data = this.opts.data || {};
+        const header = this.opts.header || {};
+        const self = this;
 
-        return new Promise((resolve, reject) => {
-            this.xmlhttp.open(type, (type === 'GET' ? url + "?" + this.obj2url(data) + "&_r=" + Math.random() : url), true);
-            if (JSON.stringify(header).indexOf(':') >= 0) {
-                let h = JSON.stringify(header).substr(1, JSON.stringify(header).length - 2);
-                for (let a of h.split(',')) {
-                    this.xmlhttp.setRequestHeader(a.split(':')[0].replace(/\"|\'/g, ''), a.split(':')[1].replace(/\"|\'/g, ''))
+        return new Observable(observe => {
+            self.xmlhttp.open(type, url, true);
+            if (header) {
+                const hkarr = Object.keys(header);
+                for (let i = 0; i < hkarr.length; i++) {
+                    const hk = hkarr[i];
+                    self.xmlhttp.setRequestHeader(hk, header[hk]);
                 }
             }
-            type === 'POST' ? this.xmlhttp.send(this.obj2url(data)) : this.xmlhttp.send();
-            this.xmlhttp.onreadystatechange = () => {
-                if (this.xmlhttp.readyState === 4 && this.xmlhttp.status === 200) {
-                    resolve({
-                        data: this.typeTrans(dataType, this.xmlhttp),
-                        status: this.xmlhttp.status,
-                        readyState: this.xmlhttp.readyState
-                    });
+            type === 'POST' ? self.xmlhttp.send(self.obj2url(data)) : self.xmlhttp.send();
+            self.xmlhttp.onreadystatechange = () => {
+                if (self.xmlhttp.status === 200) {
+                    if (self.xmlhttp.readyState === 4) {
+                        observe.next({
+                            data: self.typeTrans(dataType, self.xmlhttp),
+                            status: self.xmlhttp.status,
+                            readyState: self.xmlhttp.readyState
+                        });
+                    }
                 } else {
-                    reject({
-                        status: this.xmlhttp.status,
-                        readyState: this.xmlhttp.readyState
+                    observe.error({
+                        error: self.xmlhttp.statusText,
+                        status: self.xmlhttp.status,
+                        readyState: self.xmlhttp.readyState
                     });
                 }
-            }
+            };
         });
     }
 
@@ -59,8 +70,8 @@ export class HttpRequest {
      * @memberof HttpRequest
      */
     private obj2url(obj: any) {
-        if (!obj) return "";
-        let url = "";
+        if (!obj) { return ''; }
+        let url = '';
         Object.keys(obj).forEach(u => {
             url += `${u}=${obj[u]}&`;
         });
@@ -76,15 +87,15 @@ export class HttpRequest {
      * @memberof HttpRequest
      */
     private typeTrans(type: string, xmlhttp: XMLHttpRequest) {
-        type = type.toUpperCase() || "TEXT";
+        type = type.toUpperCase() || 'TEXT';
         switch (type) {
-            case "TEXT": this.typeText(xmlhttp); break;
-            case "JSON": this.typeJson(xmlhttp); break;
-            case "XML": this.typeXml(xmlhttp); break;
-            case "BLOB": this.typeBlob(xmlhttp); break;
-            case "ARRAYBUFFER": this.typeArraybuffer(xmlhttp); break;
+            case 'TEXT': return this.typeText(xmlhttp); break;
+            case 'JSON': return this.typeJson(xmlhttp); break;
+            case 'XML': return this.typeXml(xmlhttp); break;
+            case 'BLOB': return this.typeBlob(xmlhttp); break;
+            case 'ARRAYBUFFER': return this.typeArraybuffer(xmlhttp); break;
 
-            default: this.typeText(xmlhttp); break;
+            default: return this.typeText(xmlhttp); break;
         }
     }
     /**
@@ -96,7 +107,7 @@ export class HttpRequest {
      * @memberof HttpRequest
      */
     private typeText(xmlhttp: XMLHttpRequest) {
-        return xmlhttp.responseText.toString();
+        return xmlhttp.responseText ? xmlhttp.responseText.toString() : '';
     }
     /**
      * 将返回文字转换为JSON类型
@@ -107,7 +118,7 @@ export class HttpRequest {
      * @memberof HttpRequest
      */
     private typeJson(xmlhttp: XMLHttpRequest) {
-        return JSON.parse(xmlhttp.responseText);
+        return xmlhttp.response ? JSON.parse(xmlhttp.response) : {};
     }
     /**
      * 将返回文字转换为XML类型
@@ -118,7 +129,7 @@ export class HttpRequest {
      * @memberof HttpRequest
      */
     private typeXml(xmlhttp: XMLHttpRequest) {
-        return xmlhttp.responseXML;
+        return xmlhttp.responseXML ? xmlhttp.responseXML : '';
     }
     /**
      * 将返回文字转换为Blob类型
@@ -129,10 +140,11 @@ export class HttpRequest {
      * @memberof HttpRequest
      */
     private typeBlob(xmlhttp: XMLHttpRequest) {
-        if (xmlhttp.responseText.indexOf('[') === 0 && xmlhttp.responseText.indexOf(']') === xmlhttp.responseText.length - 1) {
-
-            return new Blob(JSON.parse(xmlhttp.responseText), { type: 'text/plain' });
-        } else return new Blob([xmlhttp.responseText], { type: 'text/plain' });
+        if (xmlhttp.responseText &&
+            xmlhttp.responseText.indexOf('[') === 0 &&
+            xmlhttp.responseText.indexOf(']') === xmlhttp.responseText.length - 1) {
+            return new Blob([xmlhttp.responseText], { type: 'text/plain' });
+        } else { return new Blob([xmlhttp.responseText], { type: 'text/plain' }); }
     }
     /**
      * 将返回文字转换为ArrayBuffer类型
@@ -143,7 +155,7 @@ export class HttpRequest {
      * @memberof HttpRequest
      */
     private typeArraybuffer(xmlhttp: XMLHttpRequest) {
-        return new ArrayBuffer(xmlhttp.responseText.length);
+        return xmlhttp.responseText.length > 0 ? new ArrayBuffer(xmlhttp.responseText.length) : new ArrayBuffer(0);
     }
 
 }
