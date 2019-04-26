@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import '../typings/HttpRequest';
 
 export class HttpRequest {
@@ -22,7 +21,7 @@ export class HttpRequest {
      * @returns
      * @memberof HttpRequest
      */
-    request(opts: HttpRequestOption): Observable<any> {
+    request(opts: HttpRequestOption) {
         this.opts = opts;
         const type = this.opts.type.toString().toUpperCase() || 'GET';
         const url = this.opts.url;
@@ -31,7 +30,7 @@ export class HttpRequest {
         const header = this.opts.header || {};
         const self = this;
 
-        return new Observable(observe => {
+        return new Promise((res, rej) => {
             self.xmlhttp.open(type, url, true);
             if (header) {
                 const hkarr = Object.keys(header);
@@ -44,14 +43,14 @@ export class HttpRequest {
             self.xmlhttp.onreadystatechange = () => {
                 if (self.xmlhttp.status === 200) {
                     if (self.xmlhttp.readyState === 4) {
-                        observe.next({
+                        res({
                             data: self.typeTrans(dataType, self.xmlhttp),
                             status: self.xmlhttp.status,
                             readyState: self.xmlhttp.readyState
                         });
                     }
                 } else {
-                    observe.error({
+                    rej({
                         error: self.xmlhttp.statusText,
                         status: self.xmlhttp.status,
                         readyState: self.xmlhttp.readyState
