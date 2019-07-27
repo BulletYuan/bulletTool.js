@@ -1,8 +1,8 @@
 {
-  "name": "bullettool",
-  "version": "2.1.0",
+  "name": "bullet-tool",
+  "version": "2.0.2",
   "description": "a front tool of bullet-tool",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
