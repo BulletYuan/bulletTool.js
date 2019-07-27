@@ -6,7 +6,7 @@
  * Last-Time:       
  */
 const
-BulletTool_Cookie = (function(){
+Cookie = (function(){
     function A(){
         this.Cookie={};
     }
@@ -53,4 +53,4 @@ BulletTool_Cookie = (function(){
     return A;
 })();
 
-module.exports = BulletTool_Cookie;
+module.exports = Cookie;
