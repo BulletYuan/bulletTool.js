@@ -3,7 +3,7 @@
  * Desc:            Cookie操作类，转换cookie字符串，对本地cookie的增删改查
  * Author:          BulletYuan
  * Create-Time:     2018.09.22
- * Last-Time:       
+ * Lastset-Time:    2019.07.28
  */
 const
 	Cookie = (function () {
