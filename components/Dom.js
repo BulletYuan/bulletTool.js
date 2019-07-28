@@ -3,10 +3,10 @@
  * Desc:            DOM模型操作类，Html结构与json序列化相互转换
  * Author:          BulletYuan
  * Create-Time:     2018.09.23
- * Last-Time:       2019.03.17
+ * Lastset-Time:    2019.07.28
  */
 const
-    BulletTool_Dom = (function () {
+    Dom = (function () {
         //将dom模型转换为json
         function Dom2Json(el) {
             let obj = {};
@@ -55,21 +55,25 @@ const
         }
 
         function A() { }
-        A.prototype.toJson = async function (dom) {
+        A.prototype.toJson = function (dom) {
+            if (typeof document !== 'object' || document.body === undefined) throw new Error("当前环境暂不支持DOM！");
             dom = dom || document.body;
-            return await Dom2Json(dom);
+            return Dom2Json(dom);
         };
-        A.prototype.toHtml = async function (obj) {
+        A.prototype.toHtml = function (obj) {
+            if (typeof document !== 'object' || document.body === undefined) throw new Error("当前环境暂不支持DOM！");
             obj = obj || {};
-            return await Json2Dom(obj).outerHTML;
+            return Json2Dom(obj).outerHTML;
         }
-        A.prototype.createDom = async function (obj, el) {
+        A.prototype.createDom = function (obj, el) {
+            if (typeof document !== 'object' || document.body === undefined) throw new Error("当前环境暂不支持DOM！");
             obj = obj || {};
-            let chd = await Json2Dom(obj);
-            await el.appendChild(chd);
+            el = el || document.body;
+            let chd = Json2Dom(obj);
+            el.appendChild(chd);
         }
 
         return A;
     })();
 
-module.exports = BulletTool_Dom;
+module.exports = Dom;
