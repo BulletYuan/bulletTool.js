@@ -3,78 +3,95 @@
  * Desc:            基于xmlhttprequest技术的http请求，默认是get方式
  * Author:          BulletYuan
  * Create-Time:     2018.09.22
- * Last-Time:       2019.03.15
+ * Lastset-Time:    2019.07.28
  */
-const
-	BulletTool_HttpRequest = (function () {
-		//将传入的对象参数转化为url格式字符串
-		function obj2url(obj) {
-			if (!obj) return "";
-			return JSON.stringify(obj).substr(1, JSON.stringify(obj).length - 2).replace(/:/g, '=').replace(/,/g, '&').replace(/\"|\'/g, '');
+const HttpRequest = (function () {
+	const common = {
+		nodeEnv: false,
+	}
+	function requestOptionsAdapter(opts) {
+		var nOpts = {};
+		if (common.nodeEnv) {
+			nOpts = {
+				protocol: '',
+				hostname: '',
+				port: 80,
+				path: '',
+				method: 'GET',
+				headers: {
+					'Accept': '*/*;',
+					'Accept-Encoding': 'gzip,deflate,compress',
+				},
+			};
+			var data = opts.data || null;
+			nOpts.method = opts.type;
+			nOpts.headers = Object.assign({}, nOpts.headers, opts.header);
+			nOpts.headers.Host = nOpts.hostname;
+			data && data.length > 0 ? nOpts.headers['Content-Length'] = Buffer.byteLength(data) : '';
+			var _url = new URL(opts.url || '');
+			nOpts.protocol = _url.protocol;
+			nOpts.hostname = _url.hostname;
+			nOpts.port = _url.port;
+			nOpts.path = _url.pathname;
+		} else {
+			nOpts = {
+				url: '',            // 请求地址
+				type: 'GET',        // 请求类型 [get|post|put|delete]
+				dataType: 'json',   // 请求数据类型 [arraybuffer|blob|json|text]
+				data: {},           // 请求数据
+				header: {},         // 请求头数据
+			};
+			nOpts = Object.assign({}, nOpts, opts);
 		}
-		//匹配当前xmlhttp返回内容的类型，并对应输出内容，默认为text
-		function typeTrans(type, xmlhttp) {
-			type = type.toUpperCase() || "TEXT";
-			switch (type) {
-				case "TEXT": typeText(xmlhttp); break;
-				case "JSON": typeJson(xmlhttp); break;
-				case "XML": typeXml(xmlhttp); break;
-				case "BLOB": typeBlob(xmlhttp); break;
-				case "ARRAYBUFFER": typeArraybuffer(xmlhttp); break;
+		return nOpts;
+	}
+	function A() {
+		this.req = null;
 
-				default: typeText(xmlhttp); break;
-			}
-		}
-		function typeText(xmlhttp) {
-			return xmlhttp.responseText;
-		}
-		function typeJson(xmlhttp) {
-			return JSON.parse(xmlhttp.responseText);
-		}
-		function typeXml(xmlhttp) {
-			return xmlhttp.responseXML;
-		}
-		function typeBlob(xmlhttp) {
-			if (xmlhttp.responseText.indexOf('[') === 0 && xmlhttp.responseText.indexOf(']') === xmlhttp.responseText.length - 1) return new Blob(xmlhttp.responseText, { type: 'text/plain' });
-			else return new Blob([xmlhttp.responseText], { type: 'text/plain' });
-		}
-		function typeArraybuffer(xmlhttp) {
-			return new ArrayBuffer(xmlhttp.responseText.length);
+		var http = null;
+		if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
+			http = require("http");
 		}
 
-		function A(opts) {
-			opts = opts || {};
-			if (opts.url && typeof opts.url === 'string') {
-				let xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
-				if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
-
-				let type = opts.type.toString().toUpperCase() || 'GET';
-				let url = opts.url;
-				let dataType = opts.dataType ? opts.dataType.toString().toUpperCase() : 'JSON';
-				let data = opts.data || {};
-				let header = opts.header || {};
-
-				return new Promise((resolve, reject) => {
-					xmlhttp.open(type, (type === 'GET' ? url + "?" + obj2url(data) + "&_r=" + Math.random() : url), true);
-					if (JSON.stringify(header).indexOf(':') >= 0) {
-						let h = JSON.stringify(header).substr(1, JSON.stringify(header).length - 2)
-						for (let a of h.split(',')) {
-							xmlhttp.setRequestHeader(a.split(':')[0].replace(/\"|\'/g, ''), a.split(':')[1].replace(/\"|\'/g, ''))
-						}
-					}
-					type === 'POST' ? xmlhttp.send(obj2url(data)) : xmlhttp.send();
-					xmlhttp.onreadystatechange = function () {
-						if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-							resolve({ data: typeTrans(dataType, xmlhttp), status: xmlhttp.status, readyState: xmlhttp.readyState });
-						} else {
-							reject({ status: xmlhttp.status, readyState: xmlhttp.readyState });
-						}
-					}
+		common.nodeEnv = false;
+		if (typeof ActiveXObject !== 'undefined') {
+			this.req = new ActiveXObject('Microsoft.XMLHTTP');
+		} else if (typeof XMLHttpRequest !== 'undefined') {
+			this.req = new XMLHttpRequest();
+		} else if (http && typeof http !== 'undefined') {
+			common.nodeEnv = true;
+			this.req = http;
+		} else {
+			throw (new Error('not http request object can use at current environment.'));
+		}
+	}
+	A.prototype.request = function (opts) {
+		opts = requestOptionsAdapter(opts);
+		if (common.nodeEnv) {
+			return new Promise((res, rej) => {
+				let _data = '',
+					_req = this.req.request(opts, _obj => {
+						_obj.setEncoding('utf8');
+						_obj.on('data', chunk => {
+							_data += chunk;
+						});
+						_obj.on('end', () => {
+							try {
+								_data = JSON.parse(_data);
+								res(_data);
+							} catch (e) {
+								res(_data);
+							}
+						});
+					});
+				_req.on('error', err => {
+					rej(err.Error);
 				});
-			} else throw new Error("没有请求地址！");
+				data ? _req.write(JSON.stringify(data)) : '';
+				_req.end();
+			});
 		}
+	}
+})();
 
-		return A;
-	})();
-
-module.exports = BulletTool_HttpRequest;
+module.exports = HttpRequest;
