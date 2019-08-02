@@ -105,6 +105,7 @@ const
         A.prototype.Gray2ColorImage = function (opt) {
             if (typeof document === 'undefined') throw new Error(`当前环境暂不支持DOM！`);
             let imageSrc = opt['imgSrc'];
+            let doneFn = opt['done'] || ((base64) => { });
             if (!imageSrc) throw new Error(`没有图像输入！`);
             let image = new Image();
             image.src = imageSrc;
@@ -118,6 +119,7 @@ const
                 let uint8 = await resetPixel(imgData.data);
                 await updateImageData(can.ctx, uint8, width, height);
                 document.body.appendChild(can.canvas);
+                doneFn(can.canvas.toDataURL);
             }
         }
 

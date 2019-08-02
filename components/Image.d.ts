@@ -9,6 +9,7 @@ interface ImageZipOptions {
 
 interface ImageGrayOptions {
     imgSrc: string,
+    done?: (base64: string) => {},
 }
 
 declare class Image {
@@ -21,7 +22,7 @@ declare class Image {
     constructor();
 
     zipImage(opt: ImageZipOptions): void;
-    toFileBlob(dataURI: string, type?: number): void;
+    toFileBlob(dataURI: string, type?: number): File | Blob;
     Gray2ColorImage(opt: ImageGrayOptions): void;
 }
 
