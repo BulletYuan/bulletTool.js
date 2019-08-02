@@ -89,22 +89,6 @@ if (!Bullet.Dom) {
 }
 console.log(`===finished test image module===\n\n`)
 
-console.log(`===prepare test image module===`)
-if (!Bullet.Image) {
-    console.log(`import image module failed`)
-} else {
-    var image = new Bullet.Image();
-    console.log(`imported image module...\n${JSON.stringify(dom)}`)
-    tryFn(() => {
-        image.zipImage({
-            imgSrc: '',
-        });
-    }, e => {
-        return `function zipImage() excuted faild!\n cause : ${e}`;
-    });
-}
-console.log(`===finished test image module===\n\n`)
-
 console.log(`===prepare test scroll module===`)
 if (!Bullet.ScrollPage) {
     console.log(`import scroll module failed`)

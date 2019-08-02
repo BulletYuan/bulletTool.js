@@ -14,13 +14,52 @@
 
 > 使用:
 
-* 引入
-
 ``` javascript
+// 引入
 const Bullet = require('bullettool')
-
 // import Bullet from 'bullettool'
+
+const cookie = new Bullet.Cookie();
+cookie.getCookies();
+
+const dom = new Bullet.Dom();
+dom.toHtml({
+    tagName: 'p',
+    html: 'hello world!',
+});
+
+const http = new Bullet.HttpRequest();
+http.request({
+    url: 'http://ydgf.sohu.com/schedule/index.json',
+    dataType: 'json',
+}).then(res => {
+    console.info(`function request(): \n${JSON.stringify(res)}\n\n`);
+}).catch(err => {
+    console.error(`function request() has error: \n${err}`);
+});
+
+const image = new Bullet.Image();
+image.zipImage({
+    imgSrc: '',
+});
+
+new Bullet.ScrollPage({
+    el: null
+});
+
+const time = new Bullet.Time();
+console.log(`timestamp():\n${time.timestamp()}`);
+console.log(`timestamp10():\n${time.timestamp10()}`);
+console.log(`dateFormat():\n${time.dateFormat()}`);
+console.log(`timeFormat(1232221):\n${time.timeFormat(1232221)}`);
+
+const url = new Bullet.Url();
+console.log(`getParams():\n${JSON.stringify(url.getParams())}`);
+console.log(`toUrl():\n${url.toUrl()}`);
+
 ```
+
+> 说明:
 
 * Cookie
 
@@ -134,8 +173,6 @@ declare class ScrollPage {
     constructor(opts: ScrollPageOptions);
 }
 ```
-
-> 说明:
 
 > 参考:
 
