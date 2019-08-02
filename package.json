@@ -1,8 +1,9 @@
 {
-  "name": "bullet-tool",
-  "version": "3.0.0",
+  "name": "bullettool",
+  "version": "2.0.2",
   "description": "a front tool of bullet-tool",
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "node ./test.js"
   },
