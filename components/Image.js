@@ -6,7 +6,7 @@
  * Last-Time:       
  */
 const
-    BulletTool_Image = (function () {
+    Image = (function () {
         //初始化canvas画布
         function initImage(img) {
             if (!img) throw new Error(`initImage(img) 出现了错误！`);
@@ -52,6 +52,7 @@ const
 
         function A() { }
         A.prototype.zipImage = function (obj) {
+            if (typeof document === 'undefined') throw new Error(`当前环境暂不支持DOM！`);
             if (!obj || !obj.imgSrc) return false;
             let img = new Image();
             img.src = obj.imgSrc;
@@ -86,6 +87,7 @@ const
             };
         };
         A.prototype.toFileBlob = function (dataURI, type) {
+            if (typeof document === 'undefined') throw new Error(`当前环境暂不支持DOM！`);
             if (dataURI) {
                 type = type || 0;
                 let arr = dataURI.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -101,8 +103,8 @@ const
             }
         };
         A.prototype.Gray2ColorImage = function (opt) {
-            let imageSrc = opt['imageSrc'];
-            let colorMap = opt['colorMap'];
+            if (typeof document === 'undefined') throw new Error(`当前环境暂不支持DOM！`);
+            let imageSrc = opt['imgSrc'];
             if (!imageSrc) throw new Error(`没有图像输入！`);
             let image = new Image();
             image.src = imageSrc;
@@ -122,4 +124,4 @@ const
         return A;
     })();
 
-module.exports = BulletTool_Image;
+module.exports = Image;

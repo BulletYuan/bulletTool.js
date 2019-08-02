@@ -6,12 +6,12 @@
  * Last-Time:       2019.03.17
  */
 const
-	BulletTool_Url = (function () {
+	UrlUtil = (function () {
 		function A() {
 			this.Params = {};
 		}
 		A.prototype.getParams = function (path) {
-			path = path || window.location.href;
+			path = path || (typeof window !== 'undefined' ? window.location.href : '');
 			const match = /(\w+):\/\/([^/:]+)(:\d*)?(.*)+/g;
 			if (path) {
 				const arr = match.exec(path);
@@ -42,6 +42,7 @@ const
 			} else return {};
 		};
 		A.prototype.toUrl = function (obj) {
+			obj = obj || {};
 			let a = "";
 			Object.keys(obj).forEach((el, i) => {
 				a += `${el}=${obj[el]}`;
@@ -55,4 +56,4 @@ const
 		return A;
 	})();
 
-module.exports = BulletTool_Url;
+module.exports = UrlUtil;
