@@ -53,7 +53,7 @@ const HttpRequest = (function () {
 			nOpts = {
 				url: '',            // 请求地址
 				type: 'GET',        // 请求类型 [get|post|put|delete]
-				dataType: 'json',   // 请求数据类型 [arraybuffer|blob|json|text]
+				dataType: 'json',   // 请求数据类型 [arraybuffer|blob|document|json|text|'']
 				data: null,           // 请求数据
 				headers: {},         // 请求头数据
 			};
@@ -119,7 +119,18 @@ const HttpRequest = (function () {
 				_req.end();
 			});
 		} else {
-			this.req.responseType = opts.dataType.toString().toLowerCase();
+			function setResponseType(type) {
+				type = type.toUpperCase() || '';
+				switch (type) {
+					case 'TEXT': return 'text';
+					case 'JSON': return 'json';
+					case 'DOCUMENT': return 'document';
+					case 'BLOB': return 'blob';
+					case 'ARRAYBUFFER': return 'arraybuffer';
+					default: return '';
+				}
+			}
+			this.req.responseType = setResponseType(opts.dataType.toString());
 
 			return new Promise((res, rej) => {
 				this.req.onreadystatechange = () => {
