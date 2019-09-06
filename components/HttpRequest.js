@@ -8,6 +8,7 @@
 const HttpRequest = (function () {
 	const common = {
 		nodeEnv: false,
+		https: false,
 	}
 	function contentTypeAdapter(type) {
 		type = type.toString().toLowerCase();
@@ -29,7 +30,7 @@ const HttpRequest = (function () {
 			nOpts = {
 				protocol: '',
 				hostname: '',
-				port: 80,
+				port: opts.url.indexOf('https') >= 0 ? 443 : 80,
 				path: '',
 				method: 'GET',
 				headers: {
@@ -48,7 +49,7 @@ const HttpRequest = (function () {
 			nOpts.protocol = _url.protocol;
 			nOpts.hostname = _url.hostname;
 			nOpts.port = _url.port;
-			nOpts.path = _url.pathname;
+			nOpts.path = _url.pathname + _url.search;
 		} else {
 			nOpts = {
 				url: '',            // 请求地址
@@ -96,28 +97,60 @@ const HttpRequest = (function () {
 	A.prototype.request = function (opts) {
 		opts = requestOptionsAdapter(opts);
 		if (common.nodeEnv) {
-			return new Promise((res, rej) => {
-				let _data = '',
-					_req = this.req.request(opts, _obj => {
-						_obj.setEncoding('utf8');
-						_obj.on('data', chunk => {
-							_data += chunk;
+			if (opts.protocol && opts.protocol.indexOf('https') >= 0) {
+				common.https = true;
+				const https = require("https");
+				if (typeof https !== 'undefined') {
+					this.req = https;
+				}
+			}
+			if (common.https) {
+				return new Promise((res, rej) => {
+					let _data = '',
+						_req = this.req.request(opts, _obj => {
+							_obj.setEncoding('utf8');
+							_obj.on('data', chunk => {
+								_data += chunk;
+							});
+							_obj.on('end', () => {
+								try {
+									_data = dataTypeFilter(_data, this.req.dataType);
+									res(_data);
+								} catch (e) {
+									res(_data);
+								}
+							});
 						});
-						_obj.on('end', () => {
-							try {
-								_data = dataTypeFilter(_data, this.req.dataType);
-								res(_data);
-							} catch (e) {
-								res(_data);
-							}
-						});
+					_req.on('error', err => {
+						rej(err.Error);
 					});
-				_req.on('error', err => {
-					rej(err.Error);
+					opts.data ? _req.write(JSON.stringify(opts.data)) : '';
+					_req.end();
 				});
-				opts.data ? _req.write(JSON.stringify(opts.data)) : '';
-				_req.end();
-			});
+			} else {
+				return new Promise((res, rej) => {
+					let _data = '',
+						_req = this.req.request(opts, _obj => {
+							_obj.setEncoding('utf8');
+							_obj.on('data', chunk => {
+								_data += chunk;
+							});
+							_obj.on('end', () => {
+								try {
+									_data = dataTypeFilter(_data, this.req.dataType);
+									res(_data);
+								} catch (e) {
+									res(_data);
+								}
+							});
+						});
+					_req.on('error', err => {
+						rej(err.Error);
+					});
+					opts.data ? _req.write(JSON.stringify(opts.data)) : '';
+					_req.end();
+				});
+			}
 		} else {
 			function setResponseType(type) {
 				type = type.toUpperCase() || '';
