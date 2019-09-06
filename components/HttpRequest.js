@@ -11,7 +11,7 @@ const HttpRequest = (function () {
 		https: false,
 	}
 	function contentTypeAdapter(type) {
-		type = type.toString().toLowerCase();
+		type = type ? type.toString().toLowerCase() : 'json';
 		let dType = 'application/x-www-form-urlencoded';
 		if (type === 'json') {
 			dType = 'application/json';
