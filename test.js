@@ -55,12 +55,9 @@ if (!Bullet.HttpRequest) {
 } else {
     var http = new Bullet.HttpRequest();
     console.log(`imported http-request module...\n${JSON.stringify(http)}`)
-    new Promise((resolve, reject) => {
-
-    }).then;
     tryFn(() => {
         http.request({
-            url: 'http://ydgf.sohu.com/schedule/index.json',
+            url: 'https://restapi.amap.com/v3/ip?key=2cdbcd76e596d7b9891769c4ade8e979&ip=47.244.37.206',
             dataType: 'json',
         }).then(res => {
             console.info(`function request(): \n${JSON.stringify(res)}\n\n`);
