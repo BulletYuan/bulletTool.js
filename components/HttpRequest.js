@@ -34,8 +34,8 @@ const HttpRequest = (function () {
         path: '',
         method: 'GET',
         headers: {
-          'Accept': '*/*;',
-          'Accept-Encoding': 'gzip,deflate,compress,*',
+          // 'Accept': '*/*;',
+          // 'Accept-Encoding': 'gzip,deflate,compress,*',
         },
       };
       var data = opts.data || null;
